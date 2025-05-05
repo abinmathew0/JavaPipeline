@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-repo/enterprise-java-cicd.git'  // Replace with your repo
+                git 'https://github.com/abinmathew0/JavaPipeline.git'  // Replace with your repo
             }
         }
 
