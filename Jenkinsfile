@@ -2,22 +2,16 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube'  // Jenkins global tool config name
+        SONARQUBE_SERVER = 'SonarQube'
     }
 
     tools {
-        maven 'Maven_3.9'   // Jenkins global tool name
-        jdk 'JDK_21'       // Jenkins global JDK name
+        maven 'Maven_3.9'
+        jdk 'JDK_21'
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/abinmathew0/JavaPipeline.git'  // Replace with your repo
-            }
-        }
-
-        stage('Build & Unit Test') {
+        stage('Build & Unit Tests') {
             steps {
                 sh 'mvn clean install'
             }
@@ -31,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('Archive Artifact') {
+        stage('Archive Build Artifacts') {
             steps {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
@@ -40,7 +34,7 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build and analysis successful!'
+            echo '✅ Build, test, and analysis completed successfully!'
         }
         failure {
             echo '❌ Build failed. Check logs!'
