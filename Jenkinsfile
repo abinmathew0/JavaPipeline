@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_SERVER = 'SonarQube'
+        DOCKER_IMAGE = 'abinmathew0/enterprise-java-cicd'
     }
 
     tools {
@@ -30,11 +31,27 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    script {
+                        bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                        bat "docker build -t %DOCKER_IMAGE% ."
+                        bat "docker push %DOCKER_IMAGE%"
+                    }
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Build, test, and analysis completed successfully!'
+            echo '✅ All stages completed successfully!'
         }
         failure {
             echo '❌ Build failed. Check logs!'
